@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSE</title>
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      width: 100%;
+      height: 100%;
+    }
+    body {
+      height: 100vh;
+      padding: 20px;
+    }
+    #chart {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Server Send Event</h1>
+  <div id="chart">  
+  </div>
+  <script type="text/javascript">
+
+    // eventSource.addEventListener('end-of-stream', () => {
+    //   console.log('End of stream!');
+    //   eventSource.close();
+    // })
+
+    let series = [];
+    const options = {
+      chart: {
+        type: 'line',
+        height: '500px',
+        animations: {
+            enabled: true,
+            easing: 'linear',
+            dynamicAnimation: {
+              speed: 1000
+            }
+          },
+      },
+      stroke: {
+        curve: 'smooth'
+      },
+      zoom: {
+        enabled: false
+      },
+      series: [{
+        name: 'rpc',
+        data: series
+      }],
+      xaxis: {
+        type: 'datetime',
+        labels: {
+            datetimeUTC: false
+          }
+      }
+    };
+
+    const addPoint = (yValue) => {
+      const date = Date.now();
+      const point = {
+        x: date,
+        y: yValue
+      };
+      series.push(point);
+    }
+    
+    const chart = new ApexCharts(document.getElementById('chart'), options);
+    chart.render();
+
+    const eventSource = new EventSource('http://localhost:3000/stream');
+    eventSource.onmessage = (message) => {
+      const { data } = message;
+      addPoint(data)
+      chart.updateSeries([{
+        data: series,
+      }]);
+    }
+  </script>
+</body>
+</html>
