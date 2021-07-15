@@ -17,29 +17,24 @@
     body {
       height: 100vh;
       padding: 20px;
+      margin: 0;
     }
     #chart {
       width: 100%;
-      height: 100%;
+      height: calc(100% - 77px);
     }
   </style>
 </head>
 <body>
   <h1>Server Send Event</h1>
-  <div id="chart">  
-  </div>
+  <div id="chart"></div>
   <script type="text/javascript">
-
-    // eventSource.addEventListener('end-of-stream', () => {
-    //   console.log('End of stream!');
-    //   eventSource.close();
-    // })
-
     let series = [];
+
     const options = {
       chart: {
         type: 'line',
-        height: '500px',
+        height: '600',
         animations: {
             enabled: true,
             easing: 'linear',
@@ -55,7 +50,6 @@
         enabled: false
       },
       series: [{
-        name: 'rpc',
         data: series
       }],
       xaxis: {
@@ -81,11 +75,16 @@
     const eventSource = new EventSource('http://localhost:3000/stream');
     eventSource.onmessage = (message) => {
       const { data } = message;
-      addPoint(data)
+      addPoint(data);
       chart.updateSeries([{
         data: series,
       }]);
-    }
+    };
+    //  Close connect on frontend 
+    // eventSource.addEventListener('end-of-stream', () => {
+    //   console.log('get event "end-of-stream" !!! ');
+    //   eventSource.close();
+    // });
   </script>
 </body>
 </html>

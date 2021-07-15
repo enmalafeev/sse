@@ -21,12 +21,13 @@ function sse(req, res) {
     res.write('\n');
   }, 2000);
 
-  // setTimeout(() => {
-  //   clearInterval(timer);
-  //   res.write(`event: end-of-stream\n`);
-  //   res.write('\n');
-  //   res.end('ok');
-  // }, 5000)
+//   setTimeout(() => {
+//     clearInterval(timer);
+//     res.write(`event: end-of-stream\n`);
+//     res.write(`data: this is the end\n`)
+//     res.write("\n");
+//     res.end("Ok");
+// }, 5000)
 
 };
 
